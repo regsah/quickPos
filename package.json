@@ -1,0 +1,11 @@
+{
+    "name": "erp",
+    "version": "0.1",
+    "main": "main.js",
+    "devDependencies": {
+        "electron": "^26.0.0"
+    },
+    "scripts": {
+        "start": "electron ."
+    }
+}

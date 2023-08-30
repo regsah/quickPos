@@ -1,0 +1,132 @@
+html, body {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 99%;
+    width: 99%;
+
+    background-color: rgb(215, 215, 215);
+
+    display: flex;
+    justify-content: center;
+}
+
+#left-container {
+    height: 100%;
+    width: 30%;
+
+    border-right: 2px solid black;
+}
+
+.form-container {
+    margin: 50% 25% 25% 15%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-text {
+    padding: 5%;
+
+    border-radius: 5px;
+    border: 1px solid rgb(190, 190, 190);
+}
+
+.ara-button {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 50%;
+
+    padding: 5%;
+    margin: 5%;
+
+    background-color: dodgerblue;
+    color: aliceblue;
+
+    border: 1px solid darkblue;
+    border-radius: 15px;
+
+    transition: 0.5s;
+}
+
+.ara-button:hover {
+    background-color: rgb(215, 215, 215);;
+    color: darkblue;
+}
+
+#right-container {
+    height: 100%;
+    width: 70%;
+
+    overflow: scroll;
+}
+
+.items-container {
+    height: 10%;
+    width: 100%;
+    
+    border-bottom: 1px solid rgb(200, 200, 200);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-text {
+    height: 100%;
+    width: 20%;
+
+    border-right: 1px solid rgb(200, 200, 200);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kod-text {
+    width: 15%;
+}
+
+.barkod-text {
+    width: 25%;
+}
+
+.isim-text {
+    width: 30%;
+}
+
+.fiyat-text {
+    width: 15%;
+}
+
+.kdv-text {
+    width: 15%;
+    border: 0;
+}
+
+#back-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 5%;
+    width: 5%;
+
+    background-image: url("../symbols/back_button.svg");
+    background-size: 50%;
+    background-position: 50% 25%;
+    background-repeat: no-repeat;
+    
+    transition: 0.5s;
+}
+
+#back-button:hover {
+    filter: invert(100%)
+}

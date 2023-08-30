@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>DENEME</title>
+
+        <link rel="stylesheet" href="stok_liste.css" />
+        <script defer src="stok_liste.js"></script>
+    </head>
+
+    <body>
+        <div id="left-container">
+            <div class="form-container">
+                <form id="urun" class="input-field">
+                    <label for="urun-text">Ürün İsmi:</label><br>
+                    <input type="text" id="urun-text" class="input-text" name="urun-text"><br>
+                    <button id="urun-button" class="ara-button">ARA</button>
+                </form>
+            </div>
+
+            <div class="form-container">
+                <form id="barkod" class="input-field">
+                    <label for="barkod-text">Stok Kodu:</label><br>
+                    <input type="text" id="barkod-text" class="input-text" name="barkod-text"><br>
+                    <button id="barkod-button" class="ara-button">ARA</button>
+                </form>
+            </div>
+        </div>
+        <div id="right-container">
+            <div class="items-container item-labels">
+                <p id="kod-label" class="item-text kod-text">Stok Kodu</p>
+                <p id="barkod-label" class="item-text barkod-text">Barkod</p>
+                <p id="isim-label" class="item-text isim-text">İsim</p>
+                <p id="fiyat-label" class="item-text fiyat-text">Fiyat</p>
+                <p id="kdv-label" class="item-text kdv-text">KDV</p>
+            </div>
+        </div>
+
+        <div id="back-button"></div>
+    </body>
+</html>

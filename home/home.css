@@ -1,0 +1,70 @@
+html, body {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 99%;
+    width: 99%;
+
+    background-color: aliceblue;
+}
+
+.button {
+    height: 30%;
+    width: 35%;
+
+    background-color: dodgerblue;
+    color: white;
+
+    border: 1px solid darkblue;
+
+    transition: 0.5s;
+}
+
+.button:hover {
+    background-color: aliceblue;
+    color: darkblue;
+}
+
+#pos {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background-image: url("../symbols/pos.svg");
+    background-size: 30%;
+    background-position: 50% 25%;
+    background-repeat: no-repeat;
+}
+
+#stok-listesi {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+
+    background-image: url("../symbols/stok_listesi.svg");
+    background-size: 30%;
+    background-position: 50% 25%;
+    background-repeat: no-repeat;
+}
+
+#stok-ekleme {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+
+    background-image: url("../symbols/stok_ekleme.svg");
+    background-size: 30%;
+    background-position: 50% 25%;
+    background-repeat: no-repeat;
+}
+
+.button-text {
+    position: inherit;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: larger;
+}

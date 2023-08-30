@@ -1,0 +1,392 @@
+html, body {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 99%;
+    width: 99%;
+}
+
+#left-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 98%;
+    width: 49%;
+
+    margin: 0;
+
+    background-color: aliceblue;
+    border: 1px solid black;
+}
+
+#right-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+
+    height: 98%;
+    width: 49%;
+
+    margin: 0;
+
+    background-color: aliceblue;
+    border: 1px solid black;
+}
+
+#items-container {
+    position: relative;
+    top: 0;
+    left: 0;
+
+    height: 58%;
+    width: 98%;
+
+    margin: 1%;
+
+    background-color: aliceblue;
+    border-bottom: 1px solid black;
+
+    overflow: auto;
+}
+
+.item-sub-container {
+    height: 10%;
+    width: 100%;
+
+    border-bottom: 1px solid black;
+
+    margin-top: 5%;
+
+    display: flex;
+}
+
+.item-sub-container:hover {
+    border-bottom: 1px solid dodgerblue;
+}
+
+.item-delete {
+    height: 100%;
+    width: 10%;
+
+    border: 0;
+
+    color: black;
+    background-color: transparent;
+
+    transition: 0.5s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-delete:hover {
+    color: red;
+}
+
+.item-count {
+    height: 100%;
+    width: 10%;
+
+    background-color: bisque;
+    color: black;
+
+    margin: 0;
+
+    transition: 0.5s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-count:hover {
+    color: rgb(65, 97, 125);
+    background-color: burlywood;
+}
+
+.item-name {
+    height: 100%;
+    width: 60%;
+
+    color: black;
+
+    transition: 0.5s;
+
+    display: flex;
+    align-items: center;
+
+    padding-left: 1%;
+}
+
+.item-name:hover {
+    color: dodgerblue;
+}
+
+.item-cost {
+    height: 100%;
+    width: 20%;
+
+    color: black;
+
+    transition: 0.5s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-cost:hover {
+    color: dodgerblue;
+}
+
+#total-value-box {
+    position: relative;
+    top: auto;
+    left: 0;
+
+    height: 10%;
+    width: 98%;
+
+    margin: 1%;
+
+    background-color: lightblue;
+    border: 1px solid black;
+
+    display: flex;
+    justify-content: space-between;
+
+}
+
+#toplam-text {
+    position: relative;
+
+    height: 100%;
+    width: fit-content;
+
+    margin-left: 2%;
+
+    color: black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: xx-large;
+}
+
+#total-value {
+    position: relative;
+
+    height: 100%;
+    width: fit-content;
+
+    margin-right: 2%;
+
+    color: black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: xx-large;
+}
+
+#l-b-buttons-container {
+    position: relative;
+    top: auto;
+    left: 0;
+    
+    height: 28%;
+    width: 98%;
+
+    margin: 1%;
+
+    display: flex;
+}
+
+#l-b-l-buttons-container,
+#l-b-r-buttons-container {
+    height: 100%;
+    width: 50%;
+
+    margin: 0;
+    
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}
+
+#parkaAl,
+#parkListe {
+    height: 40%;
+    width: 40%;
+
+    margin: 0;
+
+    color: black;
+    background-color: cornflowerblue;
+
+    transition: 0.5s;
+}
+
+#parkaAl:hover,
+#parkListe:hover {
+    color: white;
+    background-color: darkslateblue;
+}
+
+#parkaAl {
+    border-top-left-radius: 10%;
+    border-bottom-left-radius: 10%;
+}
+#parkListe {
+    border-top-right-radius: 10%;
+    border-bottom-right-radius: 10%;
+}
+
+#odeme {
+    height: 40%;
+    width: 50%;
+
+    border-radius: 10%;
+
+    color: black;
+    background-color: cornflowerblue;
+
+    transition: 0.5s;
+}
+
+#odeme:hover {
+    color: white;
+    background-color: darkslateblue;
+}
+
+#item-id {
+    position: relative;
+    top: 0;
+    left: 0;
+
+    height: 5%;
+    width: 100%;
+
+    border-bottom: 2px solid rgb(203, 171, 112);
+
+    background-color: wheat;
+
+    display: flex;
+    align-items: center;
+}
+
+#resim-container {
+    position: relative;
+    top: auto;
+    left: 0;
+
+    height: 50%;
+    width: 100%;
+
+    border-bottom: 1px solid black;
+}
+
+#r-b-buttons-container {
+    position: relative;
+    top: auto;
+    left: 0;
+
+    height: 45%;
+    width: 100%;
+
+    margin: 0;
+
+    display: flex;
+}
+
+#r-b-l-buttons-container {
+    height: 80%;
+    width: 40%;
+
+    margin: 5%;
+
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-buttons-l {
+    margin: 10%;
+    border-radius: 5px;
+
+    background-color: gold;
+
+    transition: 0.5s;
+}
+
+.grid-buttons-l:hover {
+    background-color: goldenrod;
+}
+
+#button-fiyat-degis {
+    grid-column: span 2;
+}
+
+#button-indirim {
+    grid-column: span 2;
+}
+
+#button-fiyat-gor {
+    grid-column: span 4;
+}
+
+#button-yaz {
+    grid-column: span 4;
+}
+
+#r-b-r-buttons-container {
+    height: 80%;
+    width: 40%;
+
+    margin: 5%;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-buttons-r {
+    background-color: gold;
+    transition: 0.5s;
+}
+
+.grid-buttons-r:hover {
+    background-color: goldenrod;
+}
+
+#button-ent {
+    grid-row: span 2;
+}
+
+#button-0 {
+    grid-column: span 3;
+}
+
+#back-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 5%;
+    width: 5%;
+
+    background-image: url("../symbols/back_button.svg");
+    background-size: 50%;
+    background-position: 50% 25%;
+    background-repeat: no-repeat;
+    
+    transition: 0.5s;
+}
+
+#back-button:hover {
+    filter: invert(100%)
+}
