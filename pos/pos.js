@@ -62,7 +62,7 @@ let placeHolderIDs = 0;
     let prevHTML = itemsContainer.innerHTML;
     let newHTML = `
         <div class="item-sub-container" id="item-sub-container-${newItem.itemID}">
-            <button class="item-delete id="item-delete-${newItem.itemID}">X</button>
+            <button class="item-delete" id="item-delete-${newItem.itemID}">X</button>
             <div class="item-count" id="item-count-${newItem.itemID}">${newItem.itemNum}</div>
             <div class="item-name" id="item-name-${newItem.itemID}">${newItem.itemName}</div>
             <div class="item-cost" id="item-cost-${newItem.itemID}">${newItem.itemVal}</div>
