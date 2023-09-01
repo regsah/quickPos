@@ -5,7 +5,7 @@ const { ipcMain, app, BrowserWindow } = electron;
 const path = require("path");
 const url = require("url");
 
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 let win;
 
@@ -13,29 +13,35 @@ let dbcon = mysql.createConnection({
   host: "localhost",
   user: "admin",
   password: "admin",
-  database: "main_database"
 });
 
 dbcon.connect(function(err) {
   if (err) throw err;
   console.log("Connection successfull");
 
-  let sqlQuery = "CREATE DATABASE [IF NOT EXISTS] main_database";
+  let sqlQuery = "CREATE DATABASE IF NOT EXISTS main_database";
 
-  dbcon.query(sqlQuery, barcode, function (err, result) {
+  dbcon.query(sqlQuery, function (err, result) {
       if (err) throw err;
   });
 
+  sqlQuery = "USE main_database";
+
+  dbcon.query(sqlQuery, (error) => {
+    if(error) throw error;
+
+    console.log("Using Database");
+  })
   
-  sqlQuery = "CREATE TABLE [IF NOT EXISTS] products (stock_id INT AUTO_INCREMENT PRIMARY KEY, barcode VARCHAR(255), product_name VARCHAR(255), price VARCHAR(255), tax VARCHAR(255))";
+  sqlQuery = "CREATE TABLE IF NOT EXISTS products (stock_id INT AUTO_INCREMENT PRIMARY KEY, barcode VARCHAR(255), product_name VARCHAR(255), price VARCHAR(255), tax VARCHAR(255))";
 
-  dbcon.query(sqlQuery, barcode, function (err, result) {
+  dbcon.query(sqlQuery, function (err, result) {
       if (err) throw err;
   });
 
-  sqlQuery = "CREATE TABLE [IF NOT EXISTS] basket_log (stock_id VARCHAR(255), barcode VARCHAR(255), product_name VARCHAR(255), price VARCHAR(255), quantity VARCHAR(255))"
+  sqlQuery = "CREATE TABLE IF NOT EXISTS basket_log (stock_id VARCHAR(255), barcode VARCHAR(255), product_name VARCHAR(255), price VARCHAR(255), quantity VARCHAR(255))"
 
-  dbcon.query(sqlQuery, barcode, function (err, result) {
+  dbcon.query(sqlQuery, function (err, result) {
     if (err) throw err;
   }); 
 });

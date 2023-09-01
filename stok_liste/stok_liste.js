@@ -1,5 +1,15 @@
 const { ipcRenderer } = require('electron');
 
+const mysql = require('mysql2');
+
+let dbcon = mysql.createConnection({
+    host: "localhost",
+    user: "admin",
+    password: "admin",
+    database: "main_database"
+});
+
+
 function itemObject(itemCode, itemBarcode, itemName, itemVal, itemKDV) {
     return {
         itemCode: itemCode,
@@ -21,13 +31,6 @@ function createItemHTML(item, idCount) {
     </div>`;
 }
 
-//bu array dinamik olarak alacak tabi sql'den veriyi, normalde aşağıdaki listenerin içinde oluştururuz
-let foundItems = [
-    itemObject('0001', '8517870121245', 'Faber-Castell 12li Keçeli Kalem', '174 tl', '%20'),
-    itemObject('0002', '8517870121246', 'Faber-Castell 16li Keçeli Kalem', '200 tl', '%20'),
-    itemObject('0003', '8517870121247', 'Faber-Castell 24lü Keçeli Kalem', '300 tl', '%20'),
-];
-
 
 const rightContainer = document.querySelector('#right-container');
 const itemLabels = `
@@ -42,6 +45,43 @@ const itemLabels = `
 
 document.querySelector('#urun-button').addEventListener('click', (event) => {
     event.preventDefault();
+
+    let nameText = document.querySelector('#urun-text').value;
+    let barcodeText = document.querySelector('#barkod-text').value;
+
+    let foundItems;
+
+    //Checking if barcode text is filled if so search by barcode
+    //if not search by the product name
+    if (barcodeText != '') {
+        dbcon.connect(function(err) {
+            if (err) throw err;
+            console.log('Connection successfull');
+
+            let sqlQuery = "SELECT * FROM products WHERE barcode LIKE '%"+ barcodeText + "%'";
+
+            dbcon.query(sqlQuery, barcode, function (err, result) {
+                if (err) throw err;
+
+                foundItems = result;
+            })
+        })
+    }
+    else {
+        dbcon.connect(function(err) {
+            if (err) throw err;
+            console.log('Connection successfull');
+
+            let sqlQuery = "SELECT * FROM products WHERE barcode LIKE '%"+ nameText + "%'";
+
+            dbcon.query(sqlQuery, barcode, function (err, result) {
+                if (err) throw err;
+
+                foundItems = result;
+            })
+        })
+    }
+
 
     let idCount = 0
     rightContainer.innerHTML = "";
@@ -61,6 +101,10 @@ document.querySelector('#urun-button').addEventListener('click', (event) => {
 
     //item eklerken sıkıntı oluyor mu testi, silinecek
     //foundItems.push(itemObject('0004', '8517870121248', 'Faber-Castell 48li Keçeli Kalem', '5000 tl', '%20'));
+
+    //Resetting the array
+    foundItems = [];
+
 
     //item silerken sıkıntı oluyor mu testi, silinecek
     //foundItems.pop();

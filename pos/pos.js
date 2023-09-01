@@ -14,7 +14,7 @@ scripti atarsin
 
 const { ipcRenderer } = require('electron');
 
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 let Basket = [];
 
