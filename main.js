@@ -9,11 +9,13 @@ const mysql = require('mysql2');
 
 let win;
 
-let dbcon = mysql.createConnection({
+const dbcon = mysql.createConnection({
   host: "localhost",
   user: "admin",
   password: "admin",
 });
+
+module.exports = dbcon;
 
 dbcon.connect(function(err) {
   if (err) throw err;
@@ -21,7 +23,7 @@ dbcon.connect(function(err) {
 
   let sqlQuery = "CREATE DATABASE IF NOT EXISTS main_database";
 
-  dbcon.query(sqlQuery, function (err, result) {
+  dbcon.query(sqlQuery, function (err) {
       if (err) throw err;
   });
 
@@ -33,18 +35,19 @@ dbcon.connect(function(err) {
     console.log("Using Database");
   })
   
-  sqlQuery = "CREATE TABLE IF NOT EXISTS products (stock_id INT AUTO_INCREMENT PRIMARY KEY, barcode VARCHAR(255), product_name VARCHAR(255), price VARCHAR(255), tax VARCHAR(255))";
+  sqlQuery = "CREATE TABLE IF NOT EXISTS products (stock_id INT AUTO_INCREMENT PRIMARY KEY, barcode INT, product_name VARCHAR(255), price INT, tax INT)";
 
-  dbcon.query(sqlQuery, function (err, result) {
+  dbcon.query(sqlQuery, function (err) {
       if (err) throw err;
   });
 
-  sqlQuery = "CREATE TABLE IF NOT EXISTS basket_log (stock_id VARCHAR(255), barcode VARCHAR(255), product_name VARCHAR(255), price VARCHAR(255), quantity VARCHAR(255))"
+  sqlQuery = "CREATE TABLE IF NOT EXISTS basket_log (stock_id INT, barcode INT, product_name VARCHAR(255), price INT, quantity INT)"
 
-  dbcon.query(sqlQuery, function (err, result) {
+  dbcon.query(sqlQuery, function (err) {
     if (err) throw err;
   }); 
 });
+
 
 function createWindow() {
     win = new BrowserWindow({
@@ -69,6 +72,7 @@ function createWindow() {
 
 
 app.on('ready', createWindow);
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

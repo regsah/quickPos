@@ -2,13 +2,12 @@ const { ipcRenderer } = require('electron');
 
 const mysql = require('mysql2');
 
-let dbcon = mysql.createConnection({
+const dbcon = mysql.createConnection({
     host: "localhost",
     user: "admin",
     password: "admin",
     database: "main_database"
 });
-
 
 function itemObject(itemCode, itemBarcode, itemName, itemVal, itemKDV) {
     return {
@@ -31,6 +30,9 @@ function createItemHTML(item, idCount) {
     </div>`;
 }
 
+//function barcodeSearch(text, dbcon) {
+
+//};
 
 const rightContainer = document.querySelector('#right-container');
 const itemLabels = `
@@ -46,10 +48,16 @@ const itemLabels = `
 document.querySelector('#urun-button').addEventListener('click', (event) => {
     event.preventDefault();
 
+    //Getting the values from the containers
     let nameText = document.querySelector('#urun-text').value;
     let barcodeText = document.querySelector('#barkod-text').value;
 
-    let foundItems;
+    let foundItems = [];
+
+    let idCount = 0;
+    rightContainer.innerHTML = "";
+
+    let newHTML = itemLabels + "\n\n";
 
     //Checking if barcode text is filled if so search by barcode
     //if not search by the product name
@@ -57,60 +65,68 @@ document.querySelector('#urun-button').addEventListener('click', (event) => {
         dbcon.connect(function(err) {
             if (err) throw err;
             console.log('Connection successfull');
-
-            let sqlQuery = "SELECT * FROM products WHERE barcode LIKE '%"+ barcodeText + "%'";
-
-            dbcon.query(sqlQuery, barcode, function (err, result) {
+    
+            let sqlQuery = "SELECT * FROM products WHERE barcode = ?";
+    
+            dbcon.query(sqlQuery, barcodeText, function (err, result) {
                 if (err) throw err;
 
-                foundItems = result;
-            })
-        })
+                result.forEach(row => {
+                    foundItems.push(itemObject( row.stock_id.toString(), row.barcode.toString(), row.product_name.toString(), 
+                                                row.price.toString(), row.tax.toString()));
+                });
+
+                foundItems.forEach(item => {
+                    newHTML += createItemHTML(item, idCount);
+                    ++idCount;
+                });
+
+                rightContainer.innerHTML = newHTML;
+            });
+        });
     }
     else {
         dbcon.connect(function(err) {
             if (err) throw err;
             console.log('Connection successfull');
-
+    
             let sqlQuery = "SELECT * FROM products WHERE barcode LIKE '%"+ nameText + "%'";
-
-            dbcon.query(sqlQuery, barcode, function (err, result) {
+    
+            dbcon.query(sqlQuery, function (err, result) {
                 if (err) throw err;
 
-                foundItems = result;
-            })
-        })
+                result.forEach(row => {
+                    foundItems.push(itemObject( row.stock_id.toString(), row.barcode.toString(), row.product_name.toString(), 
+                                                row.price.toString(), row.tax.toString()));
+                });
+
+                foundItems.forEach(item => {
+                    newHTML += createItemHTML(item, idCount);
+                    ++idCount;
+                });
+
+                rightContainer.innerHTML = newHTML;
+            });
+        });
     }
-
-
-    let idCount = 0
-    rightContainer.innerHTML = "";
 
     //burada foundItems'in içini dolduracak fonksiyon çağırılır ilk
     //ustteki foundItems i silersin burayı ayarladiktan sonra
     //let foundItems = sihirliFonksiyon()
 
-    let newHTML = itemLabels + "\n\n";
-
-    foundItems.forEach(item => {
-        newHTML += createItemHTML(item, idCount);
-        ++idCount;
-    });
-
-    rightContainer.innerHTML = newHTML;
-
     //item eklerken sıkıntı oluyor mu testi, silinecek
-    //foundItems.push(itemObject('0004', '8517870121248', 'Faber-Castell 48li Keçeli Kalem', '5000 tl', '%20'));
-
-    //Resetting the array
-    foundItems = [];
-
+    //foundItems.push(itemObject('0004', '8517870121248', 'Faber-Castell 48li Keçeli Kalem', '5000 tl', '%20')
 
     //item silerken sıkıntı oluyor mu testi, silinecek
     //foundItems.pop();
+
+    document.querySelector('#urun').reset();
+    document.querySelector('#barkod').reset();
+
 });
 
 //anasayfaya dönüş
 document.querySelector('#back-button').addEventListener('click', () => {
+    console.log("Returning to main page");
     ipcRenderer.send('load-home-page');
 });
