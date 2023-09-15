@@ -1,5 +1,14 @@
 const { ipcRenderer } = require('electron');
 
+const mysql = require('mysql2');
+
+const dbcon = mysql.createConnection({
+    host: "localhost",
+    user: "admin",
+    password: "admin",
+    database: "main_database"
+});
+
 function itemObject(itemCode, itemBarcode, itemName, itemVal, itemKDV) {
     return {
         itemCode: itemCode,
@@ -21,13 +30,9 @@ function createItemHTML(item, idCount) {
     </div>`;
 }
 
-//bu array dinamik olarak alacak tabi sql'den veriyi, normalde aşağıdaki listenerin içinde oluştururuz
-let foundItems = [
-    itemObject('0001', '8517870121245', 'Faber-Castell 12li Keçeli Kalem', '174 tl', '%20'),
-    itemObject('0002', '8517870121246', 'Faber-Castell 16li Keçeli Kalem', '200 tl', '%20'),
-    itemObject('0003', '8517870121247', 'Faber-Castell 24lü Keçeli Kalem', '300 tl', '%20'),
-];
+//function barcodeSearch(text, dbcon) {
 
+//};
 
 const rightContainer = document.querySelector('#right-container');
 const itemLabels = `
@@ -43,30 +48,85 @@ const itemLabels = `
 document.querySelector('#urun-button').addEventListener('click', (event) => {
     event.preventDefault();
 
-    let idCount = 0
+    //Getting the values from the containers
+    let nameText = document.querySelector('#urun-text').value;
+    let barcodeText = document.querySelector('#barkod-text').value;
+
+    let foundItems = [];
+
+    let idCount = 0;
     rightContainer.innerHTML = "";
+
+    let newHTML = itemLabels + "\n\n";
+
+    //Checking if barcode text is filled if so search by barcode
+    //if not search by the product name
+    if (barcodeText != '') {
+        dbcon.connect(function(err) {
+            if (err) throw err;
+            console.log('Connection successfull');
+    
+            let sqlQuery = "SELECT * FROM products WHERE barcode = ?";
+    
+            dbcon.query(sqlQuery, barcodeText, function (err, result) {
+                if (err) throw err;
+
+                result.forEach(row => {
+                    foundItems.push(itemObject( row.stock_id.toString(), row.barcode.toString(), row.product_name.toString(), 
+                                                row.price.toString(), row.tax.toString()));
+                });
+
+                foundItems.forEach(item => {
+                    newHTML += createItemHTML(item, idCount);
+                    ++idCount;
+                });
+
+                rightContainer.innerHTML = newHTML;
+            });
+        });
+    }
+    else {
+        dbcon.connect(function(err) {
+            if (err) throw err;
+            console.log('Connection successfull');
+    
+            let sqlQuery = "SELECT * FROM products WHERE barcode LIKE '%"+ nameText + "%'";
+    
+            dbcon.query(sqlQuery, function (err, result) {
+                if (err) throw err;
+
+                result.forEach(row => {
+                    foundItems.push(itemObject( row.stock_id.toString(), row.barcode.toString(), row.product_name.toString(), 
+                                                row.price.toString(), row.tax.toString()));
+                });
+
+                foundItems.forEach(item => {
+                    newHTML += createItemHTML(item, idCount);
+                    ++idCount;
+                });
+
+                rightContainer.innerHTML = newHTML;
+            });
+        });
+    }
 
     //burada foundItems'in içini dolduracak fonksiyon çağırılır ilk
     //ustteki foundItems i silersin burayı ayarladiktan sonra
     //let foundItems = sihirliFonksiyon()
 
-    let newHTML = itemLabels + "\n\n";
-
-    foundItems.forEach(item => {
-        newHTML += createItemHTML(item, idCount);
-        ++idCount;
-    });
-
-    rightContainer.innerHTML = newHTML;
-
     //item eklerken sıkıntı oluyor mu testi, silinecek
-    //foundItems.push(itemObject('0004', '8517870121248', 'Faber-Castell 48li Keçeli Kalem', '5000 tl', '%20'));
+    //foundItems.push(itemObject('0004', '8517870121248', 'Faber-Castell 48li Keçeli Kalem', '5000 tl', '%20')
 
     //item silerken sıkıntı oluyor mu testi, silinecek
     //foundItems.pop();
+
+    document.querySelector('#urun').reset();
+    document.querySelector('#barkod').reset();
+
 });
 
 //anasayfaya dönüş
 document.querySelector('#back-button').addEventListener('click', () => {
+    console.log("Returning to main page");
     ipcRenderer.send('load-home-page');
 });

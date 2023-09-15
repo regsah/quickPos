@@ -14,71 +14,225 @@ scripti atarsin
 
 const { ipcRenderer } = require('electron');
 
-document.querySelector('#odeme').addEventListener('click', () => {
-    ipcRenderer.send('run-python-1');
+const mysql = require('mysql2');
+
+let Basket  = [];
+let sum     = 0
+
+const dbcon = mysql.createConnection({
+    host: "localhost",
+    user: "admin",
+    password: "admin",
+    database: "main_database"
 });
 
-document.querySelector('#parkaAl').addEventListener('click', () => {
-    ipcRenderer.send('run-python-2');
-});
 
-//itemlerin dinamik eklenme cikartilma kismi
 
-/*bu fonksiyon sen her cagirdiginda bizim cektigimiz itemi tanimlayacak
- *olan obje constructor i,
- *
- *itemID: itemin obje olarak html documentinda sahip olmasini istedigimiz id
- *itemName: itemin adi
- *itemNum: envanterden kac tane cektigimiz
- *itemVal: tanesi kac para (istersen toplami kac para yap)
+//Devre Dışı
+
+/**
+ * Returns the product information from the main database with SQL
+ * 
+ * @param {number} barcode The product barcode to search for
  */
-function itemObject(itemID, itemName, itemNum, itemVal) {
-    return {
-        itemID: itemID,
-        itemName: itemName,
-        itemNum: itemNum,
-        itemVal: itemVal
-    };
+
+/*
+function getProduct(barcode) {
+    dbcon.connect(function(err) {
+        if (err) throw err;
+        alert(1);
+        console.log("Connection successfull");
+        
+        let sqlQuery = "SELECT * FROM products WHERE barcode='?' LIMIT 1 ";
+
+        dbcon.query(sqlQuery, barcode, function (err, result) {
+            if (err) throw err;
+            alert(2);
+            console.log("Product successfully selected");
+
+            return result;
+        });
+    });
 }
+*/
+
+
+//Devre Dışı
+/**
+ * Adds the information of the product to the universal Basket
+ * 
+ * @param {number} barcode Product barcode to add for
+ */
+
+/*
+function addToBasket(barcode) {
+    dbcon.connect(function(err) {
+        if (err) throw err;
+        alert(1);
+        console.log("Connection successfull");
+        
+        let sqlQuery = "SELECT * FROM products WHERE barcode='?' LIMIT 1 ";
+
+        dbcon.query(sqlQuery, barcode, function (err, result) {
+            if (err) throw err;
+            alert(2);
+            console.log("Product successfully selected");
+
+            return result;
+        });
+    });
+
+
+    alert(3);
+    Basket.push(
+        {
+            stock_id: retItem.stock_id,
+            barcode : retItem.barcode,
+            name    : retItem.product_name,
+            num     : 1,
+            val     : retItem.price
+        }
+    );
+    alert(4);
+
+}
+*/
+
+//Sistemini kurmamız lazım
+/**
+ * Erases the quantity of the selected item
+ * 
+ * @param {number} line Line of the element that will be removed (Starts from 0)
+ */
+/*
+function removeFromBasket(line) {
+    Basket[line].num = 0;
+}
+*/
+
+//Devre dışı
+/**
+ * Logs all of the information on the basket to the log database and clears the Basket
+ */
+/*function logBasket() {
+    dbcon.connect(function(err) {
+        if (err) throw err;
+        console.log("Connection successfull");
+        
+        let sqlQuery = "INSERT INTO basket_log (stock_id, barcode, name, price, quantity) VALLUES ?";
+
+        //Turns list of maps to list of lists
+        let sqlValues = Basket.map(obj => Object.values(obj));
+
+        dbcon.query(sqlQuery, sqlValues, function (err) {
+            if (err) throw err;
+            console.log("Logging successfull");
+            Basket = [];
+        });
+    });
+}
+*/
 
 const itemsContainer = document.querySelector("#items-container");
 
-//belki ise yarar diye bu arrayi koydum ama sil istersen, benim isime yaramadi
-const item_types = [];
 
-let placeHolderIDs = 0;
+let clearHTML = itemsContainer.innerHTML;
 
-/*ekleme: hocam bunu sen backende ustteki ornekleri kullanarak bagliyacaksin
- *cunku hangi tusun ne getirmesi gerektigini tam olarak bilmiyorum + urun listesi yok ortada
- *ben simdilik park Listesine tiklandiginda yeni item eklenecek sekilde func. yaziyorum
- *sen bunu modifiye edersin uygun sekilde,
- */
+document.querySelector('#odeme').addEventListener('click', () => {
 
- document.querySelector('#parkListe').addEventListener('click', () => {
-    //bu objeyi bir butona o butonu da bir scripte baglarsin hocam otomatik ceker degerleri
-    let newItem = itemObject(placeHolderIDs++, "kalemlik", 1, 100);
-    item_types.push(newItem);
+    dbcon.connect(function(err) {
+        if (err) throw err;
+        console.log("Connection successfull");
+        
+        let sqlQuery = "INSERT INTO basket_log (stock_id, barcode, name, price, quantity) VALLUES ?";
 
-    let prevHTML = itemsContainer.innerHTML;
-    let newHTML = `
-        <div class="item-sub-container" id="item-sub-container-${newItem.itemID}">
-            <button class="item-delete" id="item-delete-${newItem.itemID}">X</button>
-            <div class="item-count" id="item-count-${newItem.itemID}">${newItem.itemNum}</div>
-            <div class="item-name" id="item-name-${newItem.itemID}">${newItem.itemName}</div>
-            <div class="item-cost" id="item-cost-${newItem.itemID}">${newItem.itemVal}</div>
-        </div>`;
-    itemsContainer.innerHTML = prevHTML + "\n" + newHTML;
- });
+        //Turns list of maps to list of lists
+        let sqlValues = Basket.map(obj => Object.values(obj));
 
+        dbcon.query(sqlQuery, sqlValues, function (err) {
+            if (err) throw err;
+            console.log("Logging successfull");
+            Basket = [];
+        });
+    });
+    itemsContainer.innerHTML = clearHTML;
+    document.querySelector('#total-value').innerHTML = "0 tl";
+
+    console.log('Transaction successfull');
+});
+
+document.querySelector('#button-ent').addEventListener('click', () => {
+
+    let barcode = document.querySelector('#item-id').value;
+
+    dbcon.connect(function(err) {
+        if (err) throw err;
+        console.log("Connection successfull");
+        
+        let sqlQuery = "SELECT * FROM products WHERE barcode=? LIMIT 1 ";
+
+        dbcon.query(sqlQuery, barcode, function (err, result) {
+            if (err) throw err;
+            console.log("Product successfully selected");
+
+            //Checking if retrieved item is correct or successfully retrieved
+            if (result[0].barcode == '') {
+                alert("Barcode not found!!");
+            }
+
+            else {
+                Basket.push(
+                    {
+                        stock_id: result[0].stock_id,
+                        barcode : result[0].barcode,
+                        name    : result[0].product_name,
+                        num     : 1,
+                        val     : result[0].price
+                    }
+                );
+
+                sum += result[0].price;
+                document.querySelector('#total-value').innerHTML = sum.toString() + " tl";
+
+                let newItem = {
+                                itemID  : result[0].barcode.toString(), 
+                                itemName: result[0].product_name,
+                                itemNum : 1, 
+                                itemVal : result[0].price.toString()
+                };
+
+                //Adding the item to the html
+                let prevHTML = itemsContainer.innerHTML;
+                let newHTML = `
+                    <div class="item-sub-container" id="item-sub-container-${newItem.itemID}">
+                        <button class="item-delete" id="item-delete-${newItem.itemID}">X</button>
+                        <div class="item-count" id="item-count-${newItem.itemID}">${newItem.itemNum}</div>
+                        <div class="item-name" id="item-name-${newItem.itemID}">${newItem.itemName}</div>
+                        <div class="item-cost" id="item-cost-${newItem.itemID}">${newItem.itemVal}</div>
+                    </div>`;
+
+                itemsContainer.innerHTML = prevHTML + "\n" + newHTML;
+            }
+        });
+    });
+
+    document.querySelector("#item").reset();
+
+});
+
+
+//Şimdilik çıkarma dursun hocam çünkü htmlden silmenin yanında kaçıncı satırı
+//sildiğinin bilgisini de iletmek gerekiyo
 
 //cikarma:
-itemsContainer.addEventListener('click', (event) => {
-    if (event.target.classList.contains('item-delete')) {
-        event.target.parentElement.remove();
-    }
-});
+//itemsContainer.addEventListener('click', (event) => {
+//    if (event.target.classList.contains('item-delete')) {
+//        event.target.parentElement.remove();
+//    }
+//});
 
 //anasayfaya dönüş
 document.querySelector('#back-button').addEventListener('click', () => {
+    console.log("Yes");
     ipcRenderer.send('load-home-page');
 });

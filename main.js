@@ -5,7 +5,49 @@ const { ipcMain, app, BrowserWindow } = electron;
 const path = require("path");
 const url = require("url");
 
+const mysql = require('mysql2');
+
 let win;
+
+const dbcon = mysql.createConnection({
+  host: "localhost",
+  user: "admin",
+  password: "admin",
+});
+
+module.exports = dbcon;
+
+dbcon.connect(function(err) {
+  if (err) throw err;
+  console.log("Connection successfull");
+
+  let sqlQuery = "CREATE DATABASE IF NOT EXISTS main_database";
+
+  dbcon.query(sqlQuery, function (err) {
+      if (err) throw err;
+  });
+
+  sqlQuery = "USE main_database";
+
+  dbcon.query(sqlQuery, (error) => {
+    if(error) throw error;
+
+    console.log("Using Database");
+  })
+  
+  sqlQuery = "CREATE TABLE IF NOT EXISTS products (stock_id INT AUTO_INCREMENT PRIMARY KEY, barcode INT, product_name VARCHAR(255), price INT, tax INT)";
+
+  dbcon.query(sqlQuery, function (err) {
+      if (err) throw err;
+  });
+
+  sqlQuery = "CREATE TABLE IF NOT EXISTS basket_log (stock_id INT, barcode INT, product_name VARCHAR(255), price INT, quantity INT)"
+
+  dbcon.query(sqlQuery, function (err) {
+    if (err) throw err;
+  }); 
+});
+
 
 function createWindow() {
     win = new BrowserWindow({
@@ -30,6 +72,7 @@ function createWindow() {
 
 
 app.on('ready', createWindow);
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
