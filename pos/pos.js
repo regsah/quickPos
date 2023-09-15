@@ -135,7 +135,7 @@ function removeFromBasket(line) {
 
 const itemsContainer = document.querySelector("#items-container");
 
-//Storing inital state of the product listing to return to
+
 let clearHTML = itemsContainer.innerHTML;
 
 document.querySelector('#odeme').addEventListener('click', () => {
